@@ -17,22 +17,9 @@ plugins {
 
 include(
         "core",
-        "neoforge:neoforge-1.21.1",
-        "neoforge:neoforge-1.21.2",
-        "neoforge:neoforge-1.21.4",
-        "neoforge:neoforge-1.21.5",
-        "neoforge:neoforge-1.21.6",
-        "neoforge:neoforge-1.21.7",
-        "neoforge:neoforge-1.21.10",
-        "neoforge:neoforge-1.21.11",
         "services",
-        "forge:forge-1.16.5",
-        "forge:forge-1.17.1",
-        "forge:forge-1.18.2",
-        "forge:forge-1.19.4",
-        "forge:forge-1.20.1",
-        "forge:forge-1.20.4",
-        "forge:forge-1.20.6"
+        "forge:forge-1.20.6",
+        "forge:forge-1.21.0"
 )
 
 rootProject.name = "Concerto-Multi-Version"

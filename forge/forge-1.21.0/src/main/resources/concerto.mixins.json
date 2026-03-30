@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "top.gregtao.concerto.mixin",
+  "refmap": "concerto.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PlayerManagerMixin"
+  ],
+  "client": [
+    "ChatHudMixin",
+    "ClientPacketListenerMixin",
+    "GameMenuScreenMixin",
+    "MinecraftClientMixin",
+    "MusicTrackerMixin",
+    "SoundManagerMixin",
+    "skija.MinecraftMixin",
+    "skija.WindowMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
