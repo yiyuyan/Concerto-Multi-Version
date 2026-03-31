@@ -310,7 +310,10 @@ public class StreamPlayer implements StreamPlayerInterface, Callable<Void> {
 			generateEvent(Status.OPENING, getEncodedStreamPosition(), source);
 
 			// Audio resources from file||URL||inputStream.
+
+			logger.log(Level.ALL,source.toString());
 			audioInputStream = source.getAudioInputStream();
+
 			// Create the Line
 			createLine();
 

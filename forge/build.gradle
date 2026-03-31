@@ -9,7 +9,14 @@ subprojects {
         }
     }
 
+    configurations.configureEach {
+        resolutionStrategy {
+            force 'net.sf.jopt-simple:jopt-simple:5.0.4'
+        }
+    }
+
     shadowJar {
+
         configurations = [project.configurations.my]
         dependencies {
             exclude(dependency('junit:junit'))

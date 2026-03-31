@@ -1,5 +1,6 @@
 package top.gregtao.concerto.screen;
 
+import com.google.common.collect.Streams;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +16,10 @@ import top.gregtao.concerto.network.room.MusicRoom;
 import top.gregtao.concerto.screen.kugou.KuGouMusicIndexScreen;
 import top.gregtao.concerto.screen.netease.NeteaseCloudIndexScreen;
 import top.gregtao.concerto.screen.qq.QQMusicIndexScreen;
+import top.gregtao.concerto.screen.skija.HUDConfigScreen;
+
+import javax.sound.sampled.AudioSystem;
+import java.util.Arrays;
 
 public class ConcertoIndexScreen extends ConcertoScreen {
     public ConcertoIndexScreen(Screen parent) {
@@ -102,6 +107,11 @@ public class ConcertoIndexScreen extends ConcertoScreen {
                 }
             }
         }
+
+        this.addRenderableWidget(Button.builder(Component.literal("SkijaHUD"), button -> Minecraft.getInstance().setScreen(new HUDConfigScreen()))
+                .pos(5, 5).size(50, 20).build());
+
+        System.out.println(Arrays.toString(AudioSystem.getAudioFileTypes()));
     }
 
     @Override
