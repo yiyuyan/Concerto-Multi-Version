@@ -95,7 +95,7 @@ dependencies {
 
     implementation("io.github.humbleui:skija-windows-x64:0.143.11")
 
-    my("io.github.humbleui:skija-windows-x64:0.143.11")
+    jarJar("io.github.humbleui:skija-windows-x64:[0.143.11,)")
 }
 
 mixin {

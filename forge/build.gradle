@@ -30,6 +30,7 @@ subprojects {
 
         exclude 'META-INF/maven/**'
         exclude 'META-INF/versions/**/*'
+        //exclude 'META-INF/jarjar/**'
 
         from(rootProject.file("LICENSE")) {
             rename {"LICENSE_${project.archives_base_name}"}
