@@ -112,15 +112,6 @@ public class ConfigScreen extends OptionsSubScreen {
         editBox.setCanLoseFocus(true);
         editBox.setValue(String.valueOf(field.get(null)));
         editBox.setHint(Component.literal(field.getName()));
-        editBox.setFilter((s)->{
-            try {
-                Integer.parseInt(s);
-                return true;
-            } catch (Throwable e) {
-                return false;
-            }
-
-        });
         editBox.setResponder((s)->{
             try {
                 field.set(null,Integer.parseInt(s));
