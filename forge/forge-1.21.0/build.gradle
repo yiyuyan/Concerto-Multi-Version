@@ -124,7 +124,8 @@ tasks.named('processResources', ProcessResources).configure {
 jar {
     manifest {
         attributes([
-                "MixinConfigs" : "${mod_id}.mixins.json"
+                "MixinConfigs" : "${mod_id}.mixins.json",
+                "Multi-Release" : true
         ])
     }
 }

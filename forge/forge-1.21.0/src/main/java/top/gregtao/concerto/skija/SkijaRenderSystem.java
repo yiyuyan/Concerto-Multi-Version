@@ -1,6 +1,7 @@
 package top.gregtao.concerto.skija;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.Window;
 import io.github.humbleui.skija.*;
 import net.minecraft.client.Minecraft;
 
@@ -32,10 +33,10 @@ public class SkijaRenderSystem {
             surface.close();
         }
 
-        RenderTarget target = Minecraft.getInstance().getMainRenderTarget();
+        Window window = Minecraft.getInstance().getWindow();
 
-        currentWidth = target.width;
-        currentHeight = target.height;
+        currentWidth = window.getWidth();
+        currentHeight = window.getHeight();
 
         renderTarget = BackendRenderTarget.makeGL(
                 currentWidth,
@@ -53,6 +54,8 @@ public class SkijaRenderSystem {
                 ColorSpace.getSRGB());
 
         canvas = surface.getCanvas();
+
+        canvas.scale((float) window.getGuiScale(), (float) window.getGuiScale());
     }
 
     public static void initFont(){

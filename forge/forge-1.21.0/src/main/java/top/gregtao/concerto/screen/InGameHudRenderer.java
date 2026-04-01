@@ -1,5 +1,6 @@
 package top.gregtao.concerto.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.types.RRect;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector2i;
+import org.lwjgl.glfw.GLFW;
 import top.gregtao.concerto.ConcertoClient;
 import top.gregtao.concerto.core.config.ClientConfig;
 import top.gregtao.concerto.core.player.MusicPlayer;
@@ -45,24 +47,24 @@ public class InGameHudRenderer {
         boolean configuring = mc.screen instanceof HUDConfigScreen;
         Canvas canvas = event.canvas;
         if(MusicPlayer.INSTANCE.isPlaying() || configuring){
-            if(configuring){
-                try (Paint linePaint = new Paint().setColor(0x30FFFFFF).setAntiAlias(false)) {
-                    for (int x = 0; x < event.currentW; x += 50) {
-                        canvas.drawLine(x, 0, x, event.currentH, linePaint);
-                    }
-                    for (int y = 0; y < event.currentH; y += 50) {
-                        canvas.drawLine(0, y, event.currentW, y, linePaint);
-                    }
+            try (Paint linePaint = new Paint().setColor(0x30FFFFFF).setAntiAlias(false)) {
+                for (int x = 0; x < event.currentW; x += 50) {
+                    canvas.drawLine(x, 0, x, event.currentH, linePaint);
                 }
-
-                try(Paint backgroundPaint = new Paint().setColor(SkijaHUDConfig.backgroundColor).setAntiAlias(true)){
-                    Paint outlinePaint = new Paint().setColor(SkijaHUDConfig.outlineColor).setAntiAlias(true)
-                            .setMode(PaintMode.STROKE).setStrokeWidth(SkijaHUDConfig.outlineBold);
-                    RRect rRect = RRect.makeXYWH(SkijaHUDConfig.X,SkijaHUDConfig.Y,SkijaHUDConfig.width,SkijaHUDConfig.height,SkijaHUDConfig.roundRect);
-                    canvas.drawRRect(rRect, backgroundPaint);
-                    canvas.drawRRect(rRect,outlinePaint);
+                for (int y = 0; y < event.currentH; y += 50) {
+                    canvas.drawLine(0, y, event.currentW, y, linePaint);
                 }
             }
+
+            try(Paint backgroundPaint = new Paint().setColor(SkijaHUDConfig.backgroundColor).setAntiAlias(true)){
+                Paint outlinePaint = new Paint().setColor(SkijaHUDConfig.outlineColor).setAntiAlias(true)
+                        .setMode(PaintMode.STROKE).setStrokeWidth(SkijaHUDConfig.outlineBold);
+                RRect rRect = RRect.makeXYWH(SkijaHUDConfig.X,SkijaHUDConfig.Y,SkijaHUDConfig.width,SkijaHUDConfig.height,SkijaHUDConfig.roundRect);
+                canvas.drawRRect(rRect, backgroundPaint);
+                canvas.drawRRect(rRect,outlinePaint);
+            }
+
+
         }
     }
 

@@ -1,5 +1,6 @@
 package top.gregtao.concerto.screen.skija;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -19,7 +20,9 @@ public class HUDConfigScreen extends Screen {
         addRenderableWidget(new HUDWidget(Component.literal("hud")));
     }
 
-    public class HUDWidget extends AbstractWidget{
+    public static class HUDWidget extends AbstractWidget{
+
+        public boolean pressing = false;
 
         public HUDWidget(Component pMessage) {
             super(SkijaHUDConfig.X,SkijaHUDConfig.Y,SkijaHUDConfig.width,SkijaHUDConfig.height, pMessage);
@@ -27,45 +30,19 @@ public class HUDConfigScreen extends Screen {
 
         @Override
         public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-            pGuiGraphics.renderOutline(this.getX(),this.getY(),this.getWidth(),this.getHeight(),0x30FFFFFF);
-            setDragging(
-                    GLFW.glfwGetMouseButton(
-                            Minecraft.getInstance().getWindow().getWindow(),
-                            GLFW.GLFW_MOUSE_BUTTON_1)
-                            == GLFW.GLFW_PRESS
-            );
+            pGuiGraphics.renderOutline(this.getX(),this.getY(),this.getWidth(),this.getHeight(),0x3FFFFFFF);
+            this.pressing = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), InputConstants.MOUSE_BUTTON_LEFT)==1;
         }
 
         @Override
-        public void mouseMoved(double pMouseX, double pMouseY) {
-            if(isMouseOver(pMouseX, pMouseY) && isDragging()){
+        public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+            if(this.pressing){
                 SkijaHUDConfig.X = (int) pMouseX;
                 SkijaHUDConfig.Y = (int) pMouseY;
+
+                setPosition(SkijaHUDConfig.X,SkijaHUDConfig.Y);
             }
-        }
-
-        @Override
-        public int getX() {
-            this.setX(SkijaHUDConfig.X);
-            return super.getX();
-        }
-
-        @Override
-        public int getY() {
-            this.setY(SkijaHUDConfig.Y);
-            return super.getY();
-        }
-
-        @Override
-        public int getWidth() {
-            this.setWidth(SkijaHUDConfig.width);
-            return super.getWidth();
-        }
-
-        @Override
-        public int getHeight() {
-            this.setHeight(SkijaHUDConfig.height);
-            return super.getHeight();
+            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
         }
 
         @Override
