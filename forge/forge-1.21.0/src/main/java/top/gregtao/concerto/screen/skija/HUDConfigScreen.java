@@ -4,20 +4,49 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import top.gregtao.concerto.skija.SkijaHUDConfig;
 
-public class HUDConfigScreen extends Screen {
-    public HUDConfigScreen() {
-        super(Component.literal(HUDConfigScreen.class.getSimpleName()));
+public class HUDConfigScreen extends OptionsSubScreen {
+    public HUDConfigScreen(Screen lastScreen) {
+        super(lastScreen,Minecraft.getInstance().options,Component.literal(HUDConfigScreen.class.getSimpleName()));
     }
 
     @Override
     protected void init() {
+        super.init();
         addRenderableWidget(new HUDWidget(Component.literal("hud")));
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {}
+
+    @Override
+    protected void addOptions() {}
+
+    @Override
+    protected void addFooter() {
+
+        LinearLayout layout1 = LinearLayout.horizontal();
+
+        layout1.addChild(Button.builder(Component.literal("BasicSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                SkijaHUDConfig.widthF,SkijaHUDConfig.heightF,
+                SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build());
+
+        layout1.addChild(Button.builder(Component.literal("BgColorSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                SkijaHUDConfig.backgroundColorF))).size(80,20).build());
+
+        layout1.addChild(Button.builder(Component.literal("OlColorSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                SkijaHUDConfig.outlineColorF))).size(80,20).build());
+
+        this.layout.addToFooter(layout1);
     }
 
     public static class HUDWidget extends AbstractWidget{
@@ -46,6 +75,6 @@ public class HUDConfigScreen extends Screen {
         }
 
         @Override
-        protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {}
+        protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {}
     }
 }

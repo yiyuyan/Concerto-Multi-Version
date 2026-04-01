@@ -108,7 +108,7 @@ public class ConcertoIndexScreen extends ConcertoScreen {
             }
         }
 
-        this.addRenderableWidget(Button.builder(Component.literal("SkijaHUD"), button -> Minecraft.getInstance().setScreen(new HUDConfigScreen()))
+        this.addRenderableWidget(Button.builder(Component.literal("SkijaHUD"), button -> Minecraft.getInstance().setScreen(new HUDConfigScreen(this)))
                 .pos(5, 5).size(50, 20).build());
 
         System.out.println(Arrays.toString(AudioSystem.getAudioFileTypes()));
