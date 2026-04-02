@@ -19,9 +19,9 @@ public class SettingsScreen extends ConfigScreen {
         LinearLayout layout1 = LinearLayout.horizontal();
 
         layout1.addChild(
-                new CycleButton.Builder<SkijaHUDConfig.HUDStatus>((t)-> Component.literal("Status: "+t.name())).withValues(SkijaHUDConfig.HUDStatus.ALWAYS,SkijaHUDConfig.HUDStatus.PLAYING, SkijaHUDConfig.HUDStatus.NEVER)
+                new CycleButton.Builder<SkijaHUDConfig.HUDStatus>((t)-> Component.literal(t.name())).withValues(SkijaHUDConfig.HUDStatus.ALWAYS,SkijaHUDConfig.HUDStatus.PLAYING, SkijaHUDConfig.HUDStatus.NEVER)
                         .withInitialValue(SkijaHUDConfig.status)
-                        .create(0,0,100,20,Component.literal("status"),
+                        .create(0,0,100,20,Component.literal("Status"),
                                 ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
         );
 

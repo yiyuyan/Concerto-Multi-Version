@@ -60,7 +60,8 @@ public class SkijaRenderSystem {
     }
 
     public static void initFont(){
-        Typeface typeface = FontMgr.getDefault().matchFamilyStyle("Menlo", FontStyle.NORMAL);
+        Typeface typeface = FontMgr.getDefault().matchFamilyStyle("Microsoft YaHei", FontStyle.NORMAL);
         font = new Font(typeface,13);
+        System.out.println(typeface);
     }
 }
