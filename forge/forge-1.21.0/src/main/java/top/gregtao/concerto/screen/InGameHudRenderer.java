@@ -1,6 +1,6 @@
 package top.gregtao.concerto.screen;
 
-import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.types.RRect;
@@ -15,11 +15,11 @@ import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector2i;
-import org.lwjgl.glfw.GLFW;
 import top.gregtao.concerto.ConcertoClient;
 import top.gregtao.concerto.core.config.ClientConfig;
 import top.gregtao.concerto.core.player.MusicPlayer;
 import top.gregtao.concerto.core.player.MusicPlayerHandler;
+import top.gregtao.concerto.screen.skija.ConfigScreen;
 import top.gregtao.concerto.screen.skija.HUDConfigScreen;
 import top.gregtao.concerto.screen.widget.URLImageWidget;
 import top.gregtao.concerto.skija.SkijaHUDConfig;
@@ -44,22 +44,45 @@ public class InGameHudRenderer {
     @SubscribeEvent
     public void renderSkija(SkijaRenderEvent event){
         Minecraft mc = Minecraft.getInstance();
-        boolean configuring = mc.screen instanceof HUDConfigScreen;
+        Window window = mc.getWindow();
+
+        boolean hudConfiguring = mc.screen instanceof HUDConfigScreen;
+        boolean configuring = mc.screen instanceof ConfigScreen;
+        boolean enable = (
+                SkijaHUDConfig.status==SkijaHUDConfig.HUDStatus.PLAYING
+                        ?
+                        MusicPlayer.INSTANCE.isPlaying()
+                        :
+                        (SkijaHUDConfig.status == SkijaHUDConfig.HUDStatus.ALWAYS && (mc.cameraEntity != null))
+        );
+
         Canvas canvas = event.canvas;
-        if(MusicPlayer.INSTANCE.isPlaying() || configuring){
-            try (Paint linePaint = new Paint().setColor(0x30FFFFFF).setAntiAlias(false)) {
-                for (int x = 0; x < event.currentW; x += 50) {
-                    canvas.drawLine(x, 0, x, event.currentH, linePaint);
-                }
-                for (int y = 0; y < event.currentH; y += 50) {
-                    canvas.drawLine(0, y, event.currentW, y, linePaint);
+
+        if(enable || configuring || hudConfiguring){
+
+            float width = window.getGuiScaledWidth(),height = window.getGuiScaledHeight();
+
+            if(hudConfiguring){
+                try (Paint linePaint = new Paint().setColor(0x30FFFFFF).setAntiAlias(false)) {
+                    for (int x = 0; x < width; x += 50) {
+                        canvas.drawLine(x, 0, x, height, linePaint);
+                    }
+                    for (int y = 0; y < height; y += 50) {
+                        canvas.drawLine(0, y, width, y, linePaint);
+                    }
                 }
             }
 
-            try(Paint backgroundPaint = new Paint().setColor(SkijaHUDConfig.backgroundColor).setAntiAlias(true)){
+            float x = SkijaHUDConfig.X,y = SkijaHUDConfig.Y;
+            if(configuring){
+                x = (width - SkijaHUDConfig.width) / 2.0F;
+                y = (height - SkijaHUDConfig.height) / 2.0F;
+            }
+
+            try(Paint backgroundPaint = new Paint().setColor(SkijaHUDConfig.bgColor).setAntiAlias(true)){
                 Paint outlinePaint = new Paint().setColor(SkijaHUDConfig.outlineColor).setAntiAlias(true)
                         .setMode(PaintMode.STROKE).setStrokeWidth(SkijaHUDConfig.outlineBold);
-                RRect rRect = RRect.makeXYWH(SkijaHUDConfig.X,SkijaHUDConfig.Y,SkijaHUDConfig.width,SkijaHUDConfig.height,SkijaHUDConfig.roundRect);
+                RRect rRect = RRect.makeXYWH(x,y,SkijaHUDConfig.width,SkijaHUDConfig.height,SkijaHUDConfig.roundRect);
                 canvas.drawRRect(rRect, backgroundPaint);
                 canvas.drawRRect(rRect,outlinePaint);
             }
@@ -74,8 +97,7 @@ public class InGameHudRenderer {
                         (ConcertoClient.clientState == ConcertoClient.ClientState.MUSIC_ROOM ? " | " + Component.translatable("concerto.room").getString() : "")
                 : "";
 
-        Component text2 = Component.literal(texts[2] + state);
-        return text2;
+        return Component.literal(texts[2] + state);
     }
 
     public static class ScrollingText {

@@ -25,6 +25,7 @@ import top.gregtao.concerto.network.ClientMusicNetworkHandler;
 import top.gregtao.concerto.player.InitMusicPlayer;
 import top.gregtao.concerto.core.player.MusicPlayer;
 import top.gregtao.concerto.screen.InGameHudRenderer;
+import top.gregtao.concerto.skija.SkijaHUDConfig;
 import top.gregtao.concerto.util.ConcertoOptions;
 import top.gregtao.concerto.core.util.ConcertoRunner;
 
@@ -61,6 +62,7 @@ public class ConcertoClient {
 	public static void concertoClientInit(IEventBus modEventBus) {
 		InitMusicPlayer.init();
 		InGameHudRenderer.init();
+		SkijaHUDConfig.init();
 		modEventBus.addListener(ClientMusicNetworkHandler::register);
 	}
 

@@ -311,7 +311,6 @@ public class StreamPlayer implements StreamPlayerInterface, Callable<Void> {
 
 			// Audio resources from file||URL||inputStream.
 
-			logger.log(Level.ALL,source.toString());
 			audioInputStream = source.getAudioInputStream();
 
 			// Create the Line

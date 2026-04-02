@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -26,9 +27,6 @@ public class HUDConfigScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {}
-
-    @Override
     protected void addOptions() {}
 
     @Override
@@ -36,22 +34,19 @@ public class HUDConfigScreen extends OptionsSubScreen {
 
         LinearLayout layout1 = LinearLayout.horizontal();
 
-        layout1.addChild(Button.builder(Component.literal("BasicSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
-                SkijaHUDConfig.widthF,SkijaHUDConfig.heightF,
-                SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build());
+        layout1.addChild(
+                new CycleButton.Builder<SkijaHUDConfig.HUDStatus>((t)-> Component.literal("Status: "+t.name())).withValues(SkijaHUDConfig.HUDStatus.ALWAYS,SkijaHUDConfig.HUDStatus.PLAYING, SkijaHUDConfig.HUDStatus.NEVER)
+                        .withInitialValue(SkijaHUDConfig.status)
+                        .create(0,0,100,20,Component.literal("status"),
+                                ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
+        );
 
-        layout1.addChild(Button.builder(Component.literal("BgColorSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
-                SkijaHUDConfig.backgroundColorF))).size(80,20).build());
-
-        layout1.addChild(Button.builder(Component.literal("OlColorSettings"),(b)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
-                SkijaHUDConfig.outlineColorF))).size(80,20).build());
+        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(this))).size(100,20).build());
 
         this.layout.addToFooter(layout1);
     }
 
     public static class HUDWidget extends AbstractWidget{
-
-        public boolean pressing = false;
 
         public HUDWidget(Component pMessage) {
             super(SkijaHUDConfig.X,SkijaHUDConfig.Y,SkijaHUDConfig.width,SkijaHUDConfig.height, pMessage);
@@ -59,19 +54,26 @@ public class HUDConfigScreen extends OptionsSubScreen {
 
         @Override
         public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-            pGuiGraphics.renderOutline(this.getX(),this.getY(),this.getWidth(),this.getHeight(),0x3FFFFFFF);
-            this.pressing = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), InputConstants.MOUSE_BUTTON_LEFT)==1;
+
         }
 
         @Override
         public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-            if(this.pressing){
-                SkijaHUDConfig.X = (int) pMouseX;
-                SkijaHUDConfig.Y = (int) pMouseY;
+            SkijaHUDConfig.X = (int) pMouseX;
+            SkijaHUDConfig.Y = (int) pMouseY;
 
-                setPosition(SkijaHUDConfig.X,SkijaHUDConfig.Y);
-            }
-            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+            setPosition(SkijaHUDConfig.X,SkijaHUDConfig.Y);
+            return true;
+        }
+
+        @Override
+        public int getWidth() {
+            return SkijaHUDConfig.width;
+        }
+
+        @Override
+        public int getHeight() {
+            return SkijaHUDConfig.height;
         }
 
         @Override

@@ -2,8 +2,9 @@ package top.gregtao.concerto.screen.skija;
 
 import io.github.humbleui.skija.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
@@ -15,12 +16,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class ConfigScreen extends OptionsSubScreen {
 
     private final Field[] fields;
     
-    public Map<Field, ArrayList<EditBox>> edits = new HashMap<>();
+    public Map<Field, ArrayList<LayoutElement>> edits = new HashMap<>();
 
     public ConfigScreen(Screen pLastScreen, Field... fields) {
         super(pLastScreen, Minecraft.getInstance().options, Component.literal(ConfigScreen.class.getSimpleName()));
@@ -28,25 +30,22 @@ public class ConfigScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {}
-
-    @Override
-    protected void addOptions() {
-
-    }
+    protected void addOptions() {}
 
     @Override
     protected void addFooter() {
         LinearLayout layout1 = LinearLayout.horizontal();
         for (Field field : fields) {
             try {
-                ArrayList<EditBox> boxes = new ArrayList<>();
+                ArrayList<LayoutElement> boxes = new ArrayList<>();
                 if(field.getName().toLowerCase().endsWith("color") && field.getType().equals(int.class)){
                     for (int i = 0; i < 4; i++) {
                         EditBox editBox = getEditBox(field);
 
-                        Component message = Component.literal(field.getName()+getColorTypeName(i));
+                        Component message = Component.literal(getColorTypeName(i));
                         int value = (int) field.get(null);
+
+                        editBox.setResponder((s)->{});
 
                         editBox.setMessage(message);
                         editBox.setHint(message);
@@ -54,13 +53,29 @@ public class ConfigScreen extends OptionsSubScreen {
 
                         editBox.setResponder((s)->{
                             try {
-                                ArrayList<EditBox> boxArrayList = edits.get(field);
-                                int a = Integer.getInteger(boxArrayList.get(0).getValue());
-                                int r = Integer.getInteger(boxArrayList.get(1).getValue());
-                                int g = Integer.getInteger(boxArrayList.get(2).getValue());
-                                int b = Integer.getInteger(boxArrayList.get(3).getValue());
+                                ArrayList<LayoutElement> boxArrayList = edits.get(field);
+
+                                EditBox ab = ((EditBox)boxArrayList.get(0));
+                                EditBox rb = ((EditBox)boxArrayList.get(1));
+                                EditBox gb = ((EditBox)boxArrayList.get(2));
+                                EditBox bb = ((EditBox)boxArrayList.get(3));
+
+                                int a = Integer.parseInt(ab.getValue());
+                                int r = Integer.parseInt(rb.getValue());
+                                int g = Integer.parseInt(gb.getValue());
+                                int b = Integer.parseInt(bb.getValue());
+
+                                a = Math.max(0, Math.min(255, a));
+                                r = Math.max(0, Math.min(255, r));
+                                g = Math.max(0, Math.min(255, g));
+                                b = Math.max(0, Math.min(255, b));
 
                                 field.set(null,Color.makeARGB(a,r,g,b));
+
+                                setEditBoxValueDirect(ab,a);
+                                setEditBoxValueDirect(rb,r);
+                                setEditBoxValueDirect(gb,g);
+                                setEditBoxValueDirect(bb,b);
 
                             } catch (Throwable ignored) {}
                         });
@@ -69,8 +84,7 @@ public class ConfigScreen extends OptionsSubScreen {
 
                 }
                 else{
-                    EditBox editBox = getEditBox(field);
-                    boxes.add(editBox);
+                    boxes.add(getEditBoxWithName(field));
                 }
                 edits.put(field,boxes);
             } catch (Throwable e) {
@@ -79,7 +93,7 @@ public class ConfigScreen extends OptionsSubScreen {
             }
         }
         edits.values().forEach((w)->{
-            for (EditBox editBox : w) {
+            for (LayoutElement editBox : w) {
                 layout1.addChild(editBox);
             }
         });
@@ -107,6 +121,23 @@ public class ConfigScreen extends OptionsSubScreen {
         });
     }
 
+    private @NotNull LinearLayout getEditBoxWithName(Field field) throws IllegalAccessException {
+        return getEditBoxWithName(field,field.getName());
+    }
+
+    private @NotNull LinearLayout getEditBoxWithName(Field field, String name) throws IllegalAccessException {
+        String str = name + ": ";
+        LinearLayout linearLayout = LinearLayout.horizontal();
+
+        StringWidget label = new StringWidget(Component.literal(str), font);
+        label.setHeight(20);
+        label.setY((20 - font.lineHeight) / 2);
+
+        linearLayout.addChild(label);
+        linearLayout.addChild(getEditBox(field));
+        return linearLayout;
+    }
+
     private @NotNull EditBox getEditBox(Field field) throws IllegalAccessException {
         EditBox editBox = new EditBox(font,50,20,Component.literal(field.getName()));
         editBox.setCanLoseFocus(true);
@@ -118,5 +149,21 @@ public class ConfigScreen extends OptionsSubScreen {
             } catch (Throwable ignored) {}
         });
         return editBox;
+    }
+
+    private void setEditBoxValueDirect(EditBox editBox,Object o) throws IllegalAccessException {
+        Field field = null;
+        for (Field declaredField : editBox.getClass().getDeclaredFields()) {
+            if(declaredField.getType().equals(Consumer.class)){
+                field = declaredField;
+                break;
+            }
+        }
+        if(field==null) throw new RuntimeException("Cannot find EditBox:responder");
+        field.setAccessible(true);
+        final Consumer<String> originalResponder = (Consumer<String>) field.get(editBox);
+        editBox.setResponder((s)->{});
+        editBox.setValue(String.valueOf(o));
+        editBox.setResponder(originalResponder);
     }
 }
