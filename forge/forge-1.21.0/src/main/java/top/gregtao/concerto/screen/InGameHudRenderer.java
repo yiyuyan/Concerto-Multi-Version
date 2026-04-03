@@ -63,9 +63,7 @@ public class InGameHudRenderer {
         MinecraftForge.EVENT_BUS.register(new InGameHudRenderer());
     }
 
-    // ==================== 原 render 方法 ====================
     public static void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        // ... 保持原有代码不变 ...
         Minecraft client = Minecraft.getInstance();
         if (MusicPlayer.INSTANCE.isPlaying()) {
 

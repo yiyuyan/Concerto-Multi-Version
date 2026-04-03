@@ -16,16 +16,16 @@ public class AcknowledgmentScreen extends ConcertoScreen {
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.afdian"),
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.afdian").append(Component.translatable("concerto.donate.original_author")),
                 button -> Util.getPlatform().openUri("https://afdian.com/a/gregtao")
         ).pos(this.width / 2 - 75, 40).size(150, 20).build());
-        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.bilibili"),
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.bilibili").append(Component.translatable("concerto.donate.original_author")),
                 button -> Util.getPlatform().openUri("https://space.bilibili.com/491552285")
         ).pos(this.width / 2 - 75, 65).size(150, 20).build());
-        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.ko-fi"),
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.ko-fi").append(Component.translatable("concerto.donate.original_author")),
                 button -> Util.getPlatform().openUri("https://ko-fi.com/gregtao")
         ).pos(this.width / 2 - 75, 90).size(150, 20).build());
-        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.supporters"),
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.supporters").append(Component.translatable("concerto.donate.original_author")),
                 button -> Util.getPlatform().openUri("https://github.com/GregTaoo/Concerto/blob/dev/supporters.md")
         ).pos(this.width / 2 - 75, 115).size(150, 20).build());
     }

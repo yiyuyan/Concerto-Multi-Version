@@ -34,7 +34,7 @@ public class SkijaHUDConfig {
 
     public static int outlineBold = 1;
 
-    public static HUDStatus status = HUDStatus.ALWAYS;
+    public static HUDStatus status = HUDStatus.NEVER;
     //CONFIGS END
 
     public static void init(){
@@ -55,8 +55,6 @@ public class SkijaHUDConfig {
     }
 
     public static void save(){
-        ConcertoClient.LOGGER.debug("[{}] Saving...",SkijaHUDConfig.class.getSimpleName());
-
         JsonObject object = new JsonObject();
         for (Field field : allConfigurableFields) {
             try {

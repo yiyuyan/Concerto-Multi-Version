@@ -72,7 +72,7 @@ public class ConcertoIndexScreen extends ConcertoScreen {
         ).pos(this.width / 2 + 5, 110).size(115, 20).build());
 
         this.addRenderableWidget(Button.builder(Component.translatable("concerto.report_bugs"),
-                button -> Util.getPlatform().openUri("https://github.com/GregTaoo/Concerto/issues")
+                button -> Util.getPlatform().openUri("https://github.com/yiyuyan/Concerto-Multi-Version/issues")
         ).pos(this.width / 2 + 5, 140).size(115, 20).build());
 
         this.addRenderableWidget(Button.builder(Component.translatable("concerto.screen.options"),

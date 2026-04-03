@@ -36,21 +36,21 @@ public class HUDConfigScreen extends OptionsSubScreen {
         layout1.addChild(
                 new CycleButton.Builder<SkijaHUDConfig.HUDStatus>((t)-> Component.literal(t.name())).withValues(SkijaHUDConfig.HUDStatus.ALWAYS,SkijaHUDConfig.HUDStatus.PLAYING, SkijaHUDConfig.HUDStatus.NEVER)
                         .withInitialValue(SkijaHUDConfig.status)
-                        .create(0,0,100,20,Component.literal("Status"),
+                        .create(0,0,100,20,Component.translatable("concerto.screen.status"),
                                 ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
         );
 
-        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
-                Button.builder(Component.literal("Size"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+        layout1.addChild(Button.builder(Component.translatable("concerto.screen.settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
+                Button.builder(Component.translatable("concerto.screen.size"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                         SkijaHUDConfig.widthF,SkijaHUDConfig.heightF))).size(80,20).build(),
-                Button.builder(Component.literal("Colors"),(bb)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
-                        Button.builder(Component.literal("BgColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+                Button.builder(Component.translatable("concerto.screen.colors"),(bb)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
+                        Button.builder(Component.translatable("concerto.screen.bg_color"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                                 SkijaHUDConfig.backgroundColorF))).size(100,20).build(),
-                        Button.builder(Component.literal("OutlineColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+                        Button.builder(Component.translatable("concerto.screen.ol_color"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                                 SkijaHUDConfig.outlineColorF))).size(100,20).build()
                 ))).size(80,20).build(),
-                Button.builder(Component.literal("Font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(Minecraft.getInstance().screen))).size(80,20).build(),
-                Button.builder(Component.literal("Rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+                Button.builder(Component.translatable("concerto.screen.font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(Minecraft.getInstance().screen))).size(80,20).build(),
+                Button.builder(Component.translatable("concerto.screen.rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                         SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build()
                 ))).size(80,20).build()
         );

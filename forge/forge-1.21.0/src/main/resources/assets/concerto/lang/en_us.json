@@ -184,6 +184,8 @@
   "concerto.donate.ko-fi": "Ko-fi",
   "concerto.donate.supporters": "Supporters List",
 
+  "concerto.donate.original_author": "(Original Author)",
+
   "concerto.playlist.export": "Export as JSON",
   "concerto.playlist.export.fail": "Failed to export playlist to JSON",
   "concerto.playlist.export.success": "Successfully exported playlist to JSON in Concerto/local_playlists",
@@ -307,5 +309,20 @@
   "concerto.options.align.right": "Right",
 
   "concerto.options.kugouIsLite": "Use KuGou Lite API",
-  "concerto.options.autoGetKuGouDailyVIP": "Auto Get KuGou Daily VIP"
+  "concerto.options.autoGetKuGouDailyVIP": "Auto Get KuGou Daily VIP",
+
+  "concerto.hud.open": "Open the SkijaHUD",
+  "concerto.hud.enlarge": "Enlarge the HUD Size",
+  "concerto.hud.reduce": "Reduce the HUD Size",
+
+  "concerto.screen.status": "Status",
+  "concerto.screen.settings": "Settings",
+  "concerto.screen.size": "Size",
+
+  "concerto.screen.colors": "Colors",
+  "concerto.screen.bg_color": "BgColor",
+  "concerto.screen.ol_color": "OutlineColor",
+
+  "concerto.screen.font": "Font",
+  "concerto.screen.rece": "Rect"
 }

@@ -1,5 +1,6 @@
 package top.gregtao.concerto.screen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import top.gregtao.concerto.screen.skija.HUDConfigScreen;
 import top.gregtao.concerto.screen.widget.ConcertoOptionListWidget;
 import top.gregtao.concerto.util.ConcertoOptions;
 
@@ -36,6 +38,11 @@ public class ConcertoOptionsScreen extends ConcertoScreen {
 
     protected void addOptions() {
         this.body.addAll(ConcertoOptions.INSTANCE.getOptions());
+        this.body.addWidgetEntry(
+                Button.builder(Component.literal("SkijaHUD"),
+                        (b)-> Minecraft.getInstance().setScreen(new HUDConfigScreen(this)))
+                        .build()
+        ,null);
     }
 
     protected void initFooter() {

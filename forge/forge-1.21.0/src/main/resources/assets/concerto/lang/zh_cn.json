@@ -184,6 +184,8 @@
   "concerto.donate.ko-fi": "Ko-fi",
   "concerto.donate.supporters": "支持者名单",
 
+  "concerto.donate.original_author": "(原作者)",
+
   "concerto.playlist.export": "导出JSON",
   "concerto.playlist.export.fail": "导出JSON失败",
   "concerto.playlist.export.success": "导出JSON成功，保存至Concerto/local_playlists文件夹",
@@ -307,5 +309,20 @@
   "concerto.options.align.right": "右",
 
   "concerto.options.kugouIsLite": "使用酷狗概念版接口",
-  "concerto.options.autoGetKuGouDailyVIP": "自动领取酷狗每日VIP"
+  "concerto.options.autoGetKuGouDailyVIP": "自动领取酷狗每日VIP",
+
+  "concerto.hud.open": "打开 SkijaHUD",
+  "concerto.hud.enlarge": "放大 HUD",
+  "concerto.hud.reduce": "缩小 HUD",
+
+  "concerto.screen.status": "状态",
+  "concerto.screen.settings": "设置",
+  "concerto.screen.size": "大小",
+
+  "concerto.screen.colors": "颜色",
+  "concerto.screen.bg_color": "背景颜色",
+  "concerto.screen.ol_color": "轮廓颜色",
+
+  "concerto.screen.font": "字体",
+  "concerto.screen.rece": "矩形"
 }
