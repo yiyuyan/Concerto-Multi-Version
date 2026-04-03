@@ -6,7 +6,7 @@
   "concerto.source.local_file": "Local File",
   "concerto.source.internet": "Internet Resources",
 
-  "concerto.donate": "Donate",
+  "concerto.donate": "Donate/About",
   "concerto.no_subtitle": "No Subtitles",
   "concerto.loading": "Loading",
   "concerto.unknown": "Unknown",
@@ -185,6 +185,9 @@
   "concerto.donate.supporters": "Supporters List",
 
   "concerto.donate.original_author": "(Original Author)",
+  "concerto.donate.tip1": "1. This version of this mod has not been released on the MCMOD website. Please DO NOT report any issues on the MCMOD page.",
+  "concerto.donate.tip2": "2. Please DO NOT report any issues related to this version of the mod to the original project or the author.",
+
 
   "concerto.playlist.export": "Export as JSON",
   "concerto.playlist.export.fail": "Failed to export playlist to JSON",
@@ -324,5 +327,5 @@
   "concerto.screen.ol_color": "OutlineColor",
 
   "concerto.screen.font": "Font",
-  "concerto.screen.rece": "Rect"
+  "concerto.screen.rect": "Rect"
 }

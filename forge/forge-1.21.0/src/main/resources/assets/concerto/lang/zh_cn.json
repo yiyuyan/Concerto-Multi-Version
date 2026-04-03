@@ -6,7 +6,7 @@
   "concerto.source.local_file": "本地文件",
   "concerto.source.internet": "网络资源",
 
-  "concerto.donate": "捐赠",
+  "concerto.donate": "捐赠/关于",
   "concerto.no_subtitle": "无字幕",
   "concerto.loading": "加载中",
   "concerto.unknown": "未知",
@@ -185,6 +185,8 @@
   "concerto.donate.supporters": "支持者名单",
 
   "concerto.donate.original_author": "(原作者)",
+  "concerto.donate.tip1": "1. 该版本的此款模组未在 MCMOD 平台上发布，请不要在 MCMOD 页面上报告任何问题。",
+  "concerto.donate.tip2": "2. 请不要向原始项目或作者报告任何与该版本模组有关的问题。",
 
   "concerto.playlist.export": "导出JSON",
   "concerto.playlist.export.fail": "导出JSON失败",
@@ -324,5 +326,5 @@
   "concerto.screen.ol_color": "轮廓颜色",
 
   "concerto.screen.font": "字体",
-  "concerto.screen.rece": "矩形"
+  "concerto.screen.rect": "矩形"
 }

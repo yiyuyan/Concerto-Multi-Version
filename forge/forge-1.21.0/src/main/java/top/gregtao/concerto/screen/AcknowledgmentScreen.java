@@ -28,6 +28,16 @@ public class AcknowledgmentScreen extends ConcertoScreen {
         this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.supporters").append(Component.translatable("concerto.donate.original_author")),
                 button -> Util.getPlatform().openUri("https://github.com/GregTaoo/Concerto/blob/dev/supporters.md")
         ).pos(this.width / 2 - 75, 115).size(150, 20).build());
+
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.afdian"),
+                button -> Util.getPlatform().openUri("https://afdian.com/a/commonplace")
+        ).pos(this.width / 2 - 75, 125 + 40).size(150, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.bilibili"),
+                button -> Util.getPlatform().openUri("https://space.bilibili.com/1865120176")
+        ).pos(this.width / 2 - 75, 125 + 65).size(150, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("concerto.donate.supporters"),
+                button -> Util.getPlatform().openUri("https://github.com/yiyuyan/Concerto-Multi-Version/blob/master/supporters.md")
+        ).pos(this.width / 2 - 75, 125 + 90).size(150, 20).build());
     }
 
     @Override
@@ -36,5 +46,8 @@ public class AcknowledgmentScreen extends ConcertoScreen {
         Font renderer = Minecraft.getInstance().font;
         Component text = Component.translatable("concerto.thank_you");
         matrices.drawCenteredString(renderer, text, this.width / 2, 150, 0xffffffff);
+
+        matrices.drawCenteredString(renderer,Component.translatable("concerto.donate.tip1"),this.width / 2,5 + 2 + 9,0xffffffff);
+        matrices.drawCenteredString(renderer,Component.translatable("concerto.donate.tip2"),this.width / 2,5 + 2 + 9 + 2 + 9,0xffffffff);
     }
 }

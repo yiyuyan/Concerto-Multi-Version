@@ -63,6 +63,10 @@ public class SkijaHUDConfig {
                 ConcertoClient.LOGGER.error("[{}] Failed to save config: {}",SkijaHUDConfig.class.getSimpleName(),field.getName(),e);
             }
         }
+
+        width = Math.max(1,width);
+        height = Math.max(1,height);
+
         configFile.write(GSON.toJson(object));
     }
 

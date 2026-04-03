@@ -126,8 +126,8 @@ public class ConcertoHotkeys {
             }
             else if(REDUCE_HUD.consumeClick()){
                 if(checkHUDDisplaying()){
-                    int w = Math.min(SkijaHUDConfig.width-1,1);
-                    int h = Math.min(SkijaHUDConfig.height-1,1);
+                    int w = Math.max(SkijaHUDConfig.width-1,1);
+                    int h = Math.max(SkijaHUDConfig.height-1,1);
                     SkijaHUDConfig.width = w;
                     SkijaHUDConfig.height = h;
                     SkijaHUDConfig.save();
