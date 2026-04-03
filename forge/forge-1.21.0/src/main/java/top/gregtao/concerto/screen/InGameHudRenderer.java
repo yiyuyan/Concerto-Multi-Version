@@ -194,7 +194,6 @@ public class InGameHudRenderer {
                 }
             }
 
-            // 获取自定义的 HUD 尺寸
             float hudX = SkijaHUDConfig.X;
             float hudY = SkijaHUDConfig.Y;
             float hudWidth = SkijaHUDConfig.width;
@@ -228,13 +227,11 @@ public class InGameHudRenderer {
                 int innerWidth = (int) hudWidth;
                 int innerHeight = (int) hudHeight;
 
-                // 根据实际尺寸计算布局参数
                 LayoutParams layoutParams = calculateLayoutParams(innerWidth, innerHeight, options);
 
-                // 创建自适应字体
                 Font adaptedFont = new Font(baseFont.getTypeface(), layoutParams.fontSize);
 
-                // 渲染封面（左侧）
+                //left
                 if (layoutParams.showCover && HEAD_PICTURE.getUrl() != null) {
                     int coverX = innerX + layoutParams.padding;
                     int coverY = innerY + (innerHeight - layoutParams.coverSize) / 2;
@@ -244,13 +241,11 @@ public class InGameHudRenderer {
                     renderCoverImage(canvas, adaptedFont, coverX, coverY, layoutParams.coverSize, options);
                 }
 
-                // 渲染文本内容
                 int textStartX = innerX + layoutParams.textStartX;
                 int textMaxWidth = layoutParams.textMaxWidth;
                 int currentY = innerY + layoutParams.textStartY;
                 int lineHeight = (int) (layoutParams.fontSize + 2);
 
-                // 歌词
                 if (options.displayLyrics && texts[0] != null && !texts[0].isEmpty()) {
                     if (currentY + lineHeight <= innerY + innerHeight - layoutParams.padding) {
                         drawTextSkijaWithinBounds(canvas, adaptedFont, Component.literal(texts[0]),
@@ -270,7 +265,6 @@ public class InGameHudRenderer {
                     }
                 }
 
-                // 音乐详情（滚动）
                 if (options.displayMusicDetails && layoutParams.showMusicDetails) {
                     if (currentY + lineHeight <= innerY + innerHeight - layoutParams.padding) {
                         Component detailText = getComponent(texts);
@@ -345,32 +339,26 @@ public class InGameHudRenderer {
         }
     }
 
-    // 布局参数计算
     private LayoutParams calculateLayoutParams(int width, int height, ClientConfig.ClientConfigOptions options) {
         LayoutParams params = new LayoutParams();
 
-        // 内边距
         params.padding = Math.max(2, Math.min(4, width / 40));
 
-        // 字体大小 - 根据高度自适应
-        int availableLines = 4; // 最多显示4行
+        int availableLines = 4;
         float idealFontSize = (float) (height - params.padding * 2) / (availableLines + 1.5f);
         params.fontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, idealFontSize));
 
-        // 封面大小
         params.coverSize = 0;
         params.showCover = options.displayCoverImg && width >= 60 && height >= 30;
         if (params.showCover) {
             params.coverSize = Math.min(options.coverImgSize, height - params.padding * 2);
             params.coverSize = Math.max(12, Math.min(params.coverSize, width / 3));
-            // 如果封面太小，就不显示
             if (params.coverSize < 12) {
                 params.showCover = false;
                 params.coverSize = 0;
             }
         }
 
-        // 文本区域
         if (params.showCover) {
             params.textStartX = params.padding + params.coverSize + params.padding;
             params.textMaxWidth = width - params.padding * 3 - params.coverSize;
@@ -380,10 +368,8 @@ public class InGameHudRenderer {
         }
         params.textMaxWidth = Math.max(30, params.textMaxWidth);
 
-        // 文本起始Y
         params.textStartY = params.padding;
 
-        // 是否显示音乐详情（滚动文本需要更多空间）
         int lineHeight = (int) (params.fontSize + 2);
         int totalLines = 0;
         if (options.displayLyrics) totalLines++;
@@ -392,19 +378,17 @@ public class InGameHudRenderer {
         if (options.displayTimeProgress) totalLines++;
 
         int neededHeight = totalLines * lineHeight + params.padding * 2;
-        if (options.displayTimeProgress) neededHeight += 4; // 进度条空间
+        if (options.displayTimeProgress) neededHeight += 4;
 
         params.showMusicDetails = options.displayMusicDetails && neededHeight <= height;
         params.showProgress = options.displayTimeProgress && neededHeight + 2 <= height;
 
-        // 进度条宽度
         params.progressBarWidth = Math.min(params.textMaxWidth - 20, 80);
         params.progressBarWidth = Math.max(30, params.progressBarWidth);
 
         return params;
     }
 
-    // 渲染封面图片
     private void renderCoverImage(Canvas canvas, Font font, int x, int y, int size,
                                   ClientConfig.ClientConfigOptions options) {
         Image skijaImage = getSkijaImageFromWidget(HEAD_PICTURE);
@@ -447,7 +431,6 @@ public class InGameHudRenderer {
         }
     }
 
-    // 截断文本
     private String truncateText(Font font, String text, int maxWidth) {
         if (getTextWidth(font, Component.literal(text)) <= maxWidth) {
             return text;
@@ -465,13 +448,11 @@ public class InGameHudRenderer {
         return ellipsis;
     }
 
-    // 在边界内绘制文本
     private void drawTextSkijaWithinBounds(Canvas canvas, Font font, Component text, TextAlignment alignment,
                                            int startX, int y, int maxWidth, int color, boolean shadow) {
         String textStr = text.getString();
         if (textStr == null || textStr.isEmpty()) return;
 
-        // 如果文本太长，截断
         if (getTextWidth(font, text) > maxWidth) {
             textStr = truncateText(font, textStr, maxWidth);
             text = Component.literal(textStr);
@@ -491,7 +472,6 @@ public class InGameHudRenderer {
         drawTextSkija(canvas, font, text, TextAlignment.LEFT, renderX, y, color, shadow);
     }
 
-    // 基础文本绘制
     private void drawTextSkija(Canvas canvas, Font font, Component text, TextAlignment alignment,
                                int x, int y, int color, boolean shadow) {
         String textStr = text.getString();
@@ -510,14 +490,12 @@ public class InGameHudRenderer {
         }
     }
 
-    // 获取文本宽度
     private int getTextWidth(Font font, Component text) {
         String textStr = text.getString();
         if (textStr == null || textStr.isEmpty()) return 0;
         return (int) font.measureTextWidth(textStr);
     }
 
-    // 转换图片
     private Image getSkijaImageFromWidget(URLImageWidget widget) {
         if (widget == null || widget.getUrl() == null) return null;
 
@@ -574,7 +552,6 @@ public class InGameHudRenderer {
         return Component.literal(texts[2] + state);
     }
 
-    // 布局参数内部类
     private static class LayoutParams {
         int padding = 2;
         float fontSize = 11f;
