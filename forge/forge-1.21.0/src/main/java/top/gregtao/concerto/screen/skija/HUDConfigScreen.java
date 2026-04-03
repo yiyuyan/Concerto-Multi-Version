@@ -40,17 +40,17 @@ public class HUDConfigScreen extends OptionsSubScreen {
                                 ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
         );
 
-        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(this,
-                Button.builder(Component.literal("Size"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
+                Button.builder(Component.literal("Size"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                         SkijaHUDConfig.widthF,SkijaHUDConfig.heightF))).size(80,20).build(),
-                Button.builder(Component.literal("Colors"),(bb)-> Minecraft.getInstance().setScreen(new SettingsScreen(this,
+                Button.builder(Component.literal("Colors"),(bb)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
                         Button.builder(Component.literal("BgColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                                 SkijaHUDConfig.backgroundColorF))).size(100,20).build(),
                         Button.builder(Component.literal("OutlineColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                                 SkijaHUDConfig.outlineColorF))).size(100,20).build()
                 ))).size(80,20).build(),
-                Button.builder(Component.literal("Font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(this))).size(80,20).build(),
-                Button.builder(Component.literal("Rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                Button.builder(Component.literal("Font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(Minecraft.getInstance().screen))).size(80,20).build(),
+                Button.builder(Component.literal("Rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
                         SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build()
                 ))).size(80,20).build()
         );
