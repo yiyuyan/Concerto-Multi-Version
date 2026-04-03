@@ -143,6 +143,13 @@ public class ConfigScreen extends OptionsSubScreen {
         editBox.setCanLoseFocus(true);
         editBox.setValue(String.valueOf(field.get(null)));
         editBox.setHint(Component.literal(field.getName()));
+        editBox.setFilter((s)->{
+            try {
+                return Integer.parseInt(s)>0;
+            } catch (Throwable e) {
+                return false;
+            }
+        });
         editBox.setResponder((s)->{
             try {
                 field.set(null,Integer.parseInt(s));
@@ -151,7 +158,7 @@ public class ConfigScreen extends OptionsSubScreen {
         return editBox;
     }
 
-    private void setEditBoxValueDirect(EditBox editBox,Object o) throws IllegalAccessException {
+    public void setEditBoxValueDirect(EditBox editBox,Object o) throws IllegalAccessException {
         Field field = null;
         for (Field declaredField : editBox.getClass().getDeclaredFields()) {
             if(declaredField.getType().equals(Consumer.class)){

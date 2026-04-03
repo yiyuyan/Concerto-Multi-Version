@@ -1,6 +1,5 @@
 package top.gregtao.concerto.screen.skija;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,7 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import top.gregtao.concerto.screen.skija.font.FontConfigScreen;
 import top.gregtao.concerto.skija.SkijaHUDConfig;
 
 public class HUDConfigScreen extends OptionsSubScreen {
@@ -41,7 +40,20 @@ public class HUDConfigScreen extends OptionsSubScreen {
                                 ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
         );
 
-        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(this))).size(100,20).build());
+        layout1.addChild(Button.builder(Component.literal("Settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(this,
+                Button.builder(Component.literal("Size"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                        SkijaHUDConfig.widthF,SkijaHUDConfig.heightF))).size(80,20).build(),
+                Button.builder(Component.literal("Colors"),(bb)-> Minecraft.getInstance().setScreen(new SettingsScreen(this,
+                        Button.builder(Component.literal("BgColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+                                SkijaHUDConfig.backgroundColorF))).size(100,20).build(),
+                        Button.builder(Component.literal("OutlineColor"),(bbb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
+                                SkijaHUDConfig.outlineColorF))).size(100,20).build()
+                ))).size(80,20).build(),
+                Button.builder(Component.literal("Font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(this))).size(80,20).build(),
+                Button.builder(Component.literal("Rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(this,
+                        SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build()
+                ))).size(80,20).build()
+        );
 
         this.layout.addToFooter(layout1);
     }
@@ -53,9 +65,7 @@ public class HUDConfigScreen extends OptionsSubScreen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-
-        }
+        public void renderWidget(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {}
 
         @Override
         public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
