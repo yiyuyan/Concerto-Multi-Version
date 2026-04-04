@@ -1,6 +1,5 @@
 package top.gregtao.concerto.screen;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -9,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import top.gregtao.concerto.core.music.Music;
 import top.gregtao.concerto.network.ClientMusicNetworkHandler;
 import top.gregtao.concerto.port.PlayerUtil;
-import top.gregtao.concerto.screen.skija.HUDConfigScreen;
 import top.gregtao.concerto.screen.widget.ConcertoListWidget;
 import top.gregtao.concerto.screen.widget.MusicWithUUIDListWidget;
 import top.gregtao.concerto.core.util.Pair;

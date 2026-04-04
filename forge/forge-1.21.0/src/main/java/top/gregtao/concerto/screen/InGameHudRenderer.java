@@ -7,7 +7,6 @@ import io.github.humbleui.types.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
