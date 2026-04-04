@@ -436,6 +436,11 @@ public class InGameHudRenderer {
 
     private void renderCoverImage(Canvas canvas, Font font, int x, int y, int size,
                                   ClientConfig.ClientConfigOptions options) {
+        if (HEAD_PICTURE == null) {
+            drawPlaceholder(canvas, x, y, size, options);
+            return;
+        }
+
         Image skijaImage = getSkijaImageFromWidget(HEAD_PICTURE);
 
         if (skijaImage != null) {
@@ -444,7 +449,9 @@ public class InGameHudRenderer {
             if (options.coverImgRotate && size >= 15) {
                 float cx = x + size / 2f;
                 float cy = y + size / 2f;
-                float angleRad = (float) Math.toRadians((System.currentTimeMillis() / 8.0) % 360);
+
+                float angleRad = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks()  * (float) Math.PI / 180f;
+
                 canvas.translate(cx, cy);
                 canvas.rotate(angleRad);
                 canvas.translate(-cx, -cy);
@@ -464,14 +471,17 @@ public class InGameHudRenderer {
 
             canvas.restore();
         } else {
-            // 占位符
-            try (Paint placeholderPaint = new Paint().setColor(0xFF888888).setAntiAlias(true)) {
-                if (options.coverImgInCircle && size >= 8) {
-                    float radius = size / 2f;
-                    canvas.drawRRect(RRect.makeXYWH(x, y, size, size, radius), placeholderPaint);
-                } else {
-                    canvas.drawRect(Rect.makeXYWH(x, y, size, size), placeholderPaint);
-                }
+            drawPlaceholder(canvas, x, y, size, options);
+        }
+    }
+
+    private void drawPlaceholder(Canvas canvas, int x, int y, int size, ClientConfig.ClientConfigOptions options) {
+        try (Paint placeholderPaint = new Paint().setColor(0xFF888888).setAntiAlias(true)) {
+            if (options.coverImgInCircle && size >= 8) {
+                float radius = size / 2f;
+                canvas.drawRRect(RRect.makeXYWH(x, y, size, size, radius), placeholderPaint);
+            } else {
+                canvas.drawRect(Rect.makeXYWH(x, y, size, size), placeholderPaint);
             }
         }
     }
@@ -521,7 +531,12 @@ public class InGameHudRenderer {
 
                     for (int y = 0; y < height; y++) {
                         for (int x = 0; x < width; x++) {
-                            int argb = nativeImage.getPixelRGBA(x, y);
+                            int abgr = nativeImage.getPixelRGBA(x, y);
+                            int a = (abgr >> 24) & 0xFF;
+                            int b = (abgr >> 16) & 0xFF;
+                            int g = (abgr >> 8) & 0xFF;
+                            int r = abgr & 0xFF;
+                            int argb = (a << 24) | (r << 16) | (g << 8) | b;
                             bufferedImage.setRGB(x, y, argb);
                         }
                     }
