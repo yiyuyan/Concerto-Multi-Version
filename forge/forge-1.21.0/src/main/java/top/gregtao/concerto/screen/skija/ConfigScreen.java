@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.gregtao.concerto.ConcertoClient;
 
 import java.lang.reflect.Field;
@@ -88,8 +89,12 @@ public class ConfigScreen extends OptionsSubScreen {
                     }
 
                 }
-                else{
+                else if(field.getType().equals(int.class)){
                     boxes.add(getEditBoxWithName(field));
+                }
+                else if(field.getType().equals(float.class)){
+                    EditBox editBox = getFloatBox(field);
+                    boxes.add(getEditBoxWithName(field,field.getName(),editBox));
                 }
                 edits.put(field,boxes);
             } catch (Throwable e) {
@@ -104,6 +109,25 @@ public class ConfigScreen extends OptionsSubScreen {
         });
 
         this.layout.addToFooter(layout1);
+    }
+
+    private @NotNull EditBox getFloatBox(Field field) throws IllegalAccessException {
+        EditBox editBox = new EditBox(font,50,20,Component.literal(field.getName()));
+        editBox.setCanLoseFocus(true);
+        editBox.setValue(String.valueOf(field.get(null)));
+        editBox.setFilter((s)->{
+            try {
+                return Float.parseFloat(s) > 0F;
+            } catch (Throwable e) {
+                return false;
+            }
+        });
+        editBox.setResponder((s)->{
+            try {
+                field.set(null,Float.parseFloat(s));
+            } catch (IllegalAccessException ignored) {}
+        });
+        return editBox;
     }
 
     private @NotNull String getColorTypeName(int i){
@@ -127,10 +151,10 @@ public class ConfigScreen extends OptionsSubScreen {
     }
 
     private @NotNull LinearLayout getEditBoxWithName(Field field) throws IllegalAccessException {
-        return getEditBoxWithName(field,field.getName());
+        return getEditBoxWithName(field,field.getName(),null);
     }
 
-    private @NotNull LinearLayout getEditBoxWithName(Field field, String name) throws IllegalAccessException {
+    private @NotNull LinearLayout getEditBoxWithName(Field field, String name,@Nullable EditBox editBox) throws IllegalAccessException {
         String str = name + ": ";
         LinearLayout linearLayout = LinearLayout.horizontal();
 
@@ -139,7 +163,12 @@ public class ConfigScreen extends OptionsSubScreen {
         label.setY((20 - font.lineHeight) / 2);
 
         linearLayout.addChild(label);
-        linearLayout.addChild(getEditBox(field));
+        if(editBox==null){
+            linearLayout.addChild(getEditBox(field));
+        }
+        else{
+            linearLayout.addChild(editBox);
+        }
         return linearLayout;
     }
 

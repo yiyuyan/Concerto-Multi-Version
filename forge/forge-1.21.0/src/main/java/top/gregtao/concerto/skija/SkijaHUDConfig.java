@@ -35,6 +35,8 @@ public class SkijaHUDConfig {
 
     public static int outlineBold = 1;
 
+    public static float rotateDur = 4F;
+
     public static HUDStatus status = HUDStatus.NEVER;
 
     //CONFIGS END
@@ -75,6 +77,12 @@ public class SkijaHUDConfig {
     }
 
     public static void save(){
+
+        width = Math.max(1,width);
+        height = Math.max(1,height);
+
+        if(rotateDur<=0F) rotateDur = 0.1F;
+
         JsonObject object = new JsonObject();
         for (Field field : allConfigurableFields) {
             String name = field.getName();
@@ -98,9 +106,6 @@ public class SkijaHUDConfig {
         if(SkijaRenderSystem.font!=null && SkijaRenderSystem.font.getTypeface()!=null){
             object.addProperty("font", Objects.requireNonNullElse(SkijaRenderSystem.font.getTypeface().getFamilyName(),"DengXian"));
         }
-
-        width = Math.max(1,width);
-        height = Math.max(1,height);
 
         configFile.write(GSON.toJson(object));
     }
@@ -131,6 +136,8 @@ public class SkijaHUDConfig {
 
     public static Field outlineBoldF;
 
+    public static Field rotateImgSpeedF;
+
     public static Field statusF;
 
     public static ArrayList<Field> allConfigurableFields = new ArrayList<>();
@@ -147,6 +154,8 @@ public class SkijaHUDConfig {
             backgroundColorF  = SkijaHUDConfig.class.getField("bgColor");
             outlineColorF = SkijaHUDConfig.class.getField("outlineColor");
             outlineBoldF = SkijaHUDConfig.class.getField("outlineBold");
+
+            rotateImgSpeedF = SkijaHUDConfig.class.getField("rotateDur");
 
             statusF = SkijaHUDConfig.class.getField("status");
 

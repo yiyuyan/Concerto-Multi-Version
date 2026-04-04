@@ -63,7 +63,7 @@ public class HUDConfigScreen extends OptionsSubScreen {
                 ))).size(80,20).build(),
                 Button.builder(Component.translatable("concerto.screen.font"),(cb)->Minecraft.getInstance().setScreen(new FontConfigScreen(Minecraft.getInstance().screen))).size(80,20).build(),
                 Button.builder(Component.translatable("concerto.screen.rect"),(bb)-> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen,
-                        SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF))).size(80,20).build()
+                        SkijaHUDConfig.roundRectF,SkijaHUDConfig.outlineBoldF,SkijaHUDConfig.rotateImgSpeedF))).size(80,20).build()
                 ))).size(80,20).build()
         );
 

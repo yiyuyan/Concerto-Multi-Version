@@ -51,6 +51,8 @@ public class InGameHudRenderer {
     private static final float MAX_FONT_SIZE = 14f;
     private static final float DEFAULT_FONT_SIZE = 11f;
 
+    private float totalRotate = 0;
+
     public static void init() {
         MusicPlayerHandler.headPictureSetter = (url) -> {
             HEAD_PICTURE.setUrl(url);
@@ -166,6 +168,8 @@ public class InGameHudRenderer {
 
         if(mc.isPaused() || mc.screen instanceof FontSettingsScreen) return;
         if(mc.screen instanceof ChatScreen && ClientConfig.INSTANCE.options.hideWhenChat) return;
+
+        if(!MusicPlayer.INSTANCE.isPlaying()) totalRotate = 0;
 
         boolean hudConfiguring = mc.screen instanceof HUDConfigScreen;
         boolean configuring = mc.screen instanceof ConfigScreen;
@@ -450,10 +454,11 @@ public class InGameHudRenderer {
                 float cx = x + size / 2f;
                 float cy = y + size / 2f;
 
-                float angleRad = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks()  * (float) Math.PI / 180f;
+                float realtimeTicks = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+                totalRotate += realtimeTicks * (float) Math.PI / SkijaHUDConfig.rotateDur;
 
                 canvas.translate(cx, cy);
-                canvas.rotate(angleRad);
+                canvas.rotate(totalRotate);
                 canvas.translate(-cx, -cy);
             }
 
