@@ -26,7 +26,7 @@ public class SkijaHUDConfig {
 
     //CONFIGS START
     public static int X,Y;
-    public static int width = 100,height = 40;
+    public static int width = 165,height = 35;
 
     public static int roundRect = 6;
 

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import top.gregtao.concerto.core.config.ClientConfig;
 import top.gregtao.concerto.screen.skija.font.FontConfigScreen;
 import top.gregtao.concerto.skija.SkijaHUDConfig;
 
@@ -42,7 +43,11 @@ public class HUDConfigScreen extends OptionsSubScreen {
                 new CycleButton.Builder<SkijaHUDConfig.HUDStatus>((t)-> Component.literal(t.name())).withValues(SkijaHUDConfig.HUDStatus.ALWAYS,SkijaHUDConfig.HUDStatus.PLAYING, SkijaHUDConfig.HUDStatus.NEVER)
                         .withInitialValue(SkijaHUDConfig.status)
                         .create(0,0,100,20,Component.translatable("concerto.screen.status"),
-                                ((pCycleButton, pValue) -> SkijaHUDConfig.status = pValue))
+                                ((pCycleButton, pValue) -> {
+                                    SkijaHUDConfig.status = pValue;
+                                    ClientConfig.INSTANCE.options.enableDefaultLyricsHUD = pValue.equals(SkijaHUDConfig.HUDStatus.NEVER);
+                                    ClientConfig.INSTANCE.writeOptions();
+                                }))
         );
 
         layout1.addChild(Button.builder(Component.translatable("concerto.screen.settings"),(b)-> Minecraft.getInstance().setScreen(new SettingsScreen(Minecraft.getInstance().screen,
