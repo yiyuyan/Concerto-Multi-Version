@@ -62,12 +62,12 @@ public class SkijaRenderSystem {
     }
 
     public static void initFont(){
-        Typeface typeface = FontMgr.getDefault().matchFamilyStyle("Microsoft YaHei", FontStyle.NORMAL);
-        font = new Font(typeface,13);
-        System.out.println(typeface);
+        Typeface typeface = FontMgr.getDefault().matchFamilyStyle("DengXian", FontStyle.NORMAL);
+        font = new Font(typeface,9);
     }
 
-    public static void setFont(String s) {
+    public static void setFont(String s,float size) {
+        if(s.isEmpty()) return;
         Typeface typeface;
         File file = new File(s);
 
@@ -78,10 +78,10 @@ public class SkijaRenderSystem {
             typeface = FontMgr.getDefault().matchFamiliesStyle(new String[]{s},FontStyle.NORMAL);
         }
 
-        setFont(typeface);
+        setFont(typeface,size);
     }
 
-    public static void setFont(Typeface typeface){
-        if(typeface!=null) font = new Font(typeface,13);
+    public static void setFont(Typeface typeface,float size){
+        if(typeface!=null) font = new Font(typeface,size);
     }
 }

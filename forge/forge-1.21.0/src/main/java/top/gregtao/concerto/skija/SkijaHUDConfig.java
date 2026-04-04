@@ -14,6 +14,7 @@ import top.gregtao.concerto.screen.skija.HUDConfigScreen;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Mod.EventBusSubscriber
 public class SkijaHUDConfig {
@@ -35,6 +36,7 @@ public class SkijaHUDConfig {
     public static int outlineBold = 1;
 
     public static HUDStatus status = HUDStatus.NEVER;
+
     //CONFIGS END
 
     public static void init(){
@@ -42,10 +44,28 @@ public class SkijaHUDConfig {
             JsonObject object = JsonParser.parseString(configFile.read()).getAsJsonObject();
             for (Field field : allConfigurableFields) {
                 try {
-                    if(object.has(field.getName())) field.set(null,object.get(field.getName()).getAsInt());
+                    if(object.has(field.getName())){
+                        JsonElement element = object.get(field.getName());
+                        if(field.getType().equals(int.class)){
+                            field.set(null,element.getAsInt());
+                        }
+                        else if(field.getType().equals(float.class)){
+                            field.set(null,element.getAsFloat());
+                        }
+                        else if(field.getType().equals(String.class)){
+                            field.set(null,element.getAsString());
+                        }
+                        else if(field.getType().equals(HUDStatus.class)){
+                            field.set(null,HUDStatus.valueOf(element.getAsString()));
+                        }
+                    }
                 } catch (IllegalAccessException e) {
                     ConcertoClient.LOGGER.error("[{}] Failed to read config: {}",SkijaHUDConfig.class.getSimpleName(),field.getName(),e);
                 }
+            }
+
+            if(object.has("font")){
+                SkijaRenderSystem.setFont(object.get("font").getAsString(),9);
             }
         } catch (Throwable e) {
             ConcertoClient.LOGGER.error("[{}] Failed to read the config file.",SkijaHUDConfig.class.getSimpleName(),e);
@@ -57,11 +77,26 @@ public class SkijaHUDConfig {
     public static void save(){
         JsonObject object = new JsonObject();
         for (Field field : allConfigurableFields) {
+            String name = field.getName();
             try {
-                object.addProperty(field.getName(),(int)field.get(null));
+                if(field.getType().equals(int.class)){
+                    object.addProperty(name,(int)field.get(null));
+                }
+                else if(field.getType().equals(float.class)){
+                    object.addProperty(name,(float)field.get(null));
+                }
+                else if(field.getType().equals(String.class)){
+                    object.addProperty(name,(String) field.get(null));
+                }
+                else if(field.getType().equals(HUDStatus.class)){
+                    object.addProperty(name,((HUDStatus)field.get(null)).name());
+                }
             } catch (IllegalAccessException e) {
-                ConcertoClient.LOGGER.error("[{}] Failed to save config: {}",SkijaHUDConfig.class.getSimpleName(),field.getName(),e);
+                ConcertoClient.LOGGER.error("[{}] Failed to save config: {}",SkijaHUDConfig.class.getSimpleName(),name,e);
             }
+        }
+        if(SkijaRenderSystem.font!=null && SkijaRenderSystem.font.getTypeface()!=null){
+            object.addProperty("font", Objects.requireNonNullElse(SkijaRenderSystem.font.getTypeface().getFamilyName(),"DengXian"));
         }
 
         width = Math.max(1,width);
@@ -96,6 +131,8 @@ public class SkijaHUDConfig {
 
     public static Field outlineBoldF;
 
+    public static Field statusF;
+
     public static ArrayList<Field> allConfigurableFields = new ArrayList<>();
 
     static {
@@ -110,6 +147,8 @@ public class SkijaHUDConfig {
             backgroundColorF  = SkijaHUDConfig.class.getField("bgColor");
             outlineColorF = SkijaHUDConfig.class.getField("outlineColor");
             outlineBoldF = SkijaHUDConfig.class.getField("outlineBold");
+
+            statusF = SkijaHUDConfig.class.getField("status");
 
             Arrays.stream(SkijaHUDConfig.class.getFields()).filter(f->f.getType().equals(Field.class)).forEach(f->{
                 try {

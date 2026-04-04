@@ -260,6 +260,7 @@
   "concerto.error.invalid_path": "不可用的路径或文件格式",
   "concerto.error.unsupported_operation": "不支持的操作！",
 
+  "concerto.options.enableDefaultLyricsHUD": "启用默认歌词HUD",
   "concerto.options.confirmAfterReceived": "手动接受音乐分享",
   "concerto.options.hideWhenChat": "聊天时隐藏",
   "concerto.options.printRequestResults": "打印HTTP请求结果",

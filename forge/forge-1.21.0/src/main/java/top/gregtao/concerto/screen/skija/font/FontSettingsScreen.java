@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import top.gregtao.concerto.skija.SkijaRenderSystem;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class FontSettingsScreen extends OptionsSubScreen {
@@ -51,7 +52,7 @@ public class FontSettingsScreen extends OptionsSubScreen {
         if (entry != null && entry.font.getTypeface() != null
                 && !entry.font.equals(SkijaRenderSystem.font)) {
             SkijaRenderSystem.font = entry.font;
-            this.callback.accept(SkijaRenderSystem.font.getTypeface().getFamilyName());
+            this.callback.accept(Objects.requireNonNull(SkijaRenderSystem.font.getTypeface()).getFamilyName());
         }
 
         Minecraft.getInstance().setScreen(this.lastScreen);

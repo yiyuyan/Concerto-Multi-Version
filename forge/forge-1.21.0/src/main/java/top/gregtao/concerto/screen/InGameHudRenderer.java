@@ -32,6 +32,8 @@ import top.gregtao.concerto.util.RenderUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -64,6 +66,7 @@ public class InGameHudRenderer {
     }
 
     public static void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        if(!ClientConfig.INSTANCE.options.enableDefaultLyricsHUD) return;
         Minecraft client = Minecraft.getInstance();
         if (MusicPlayer.INSTANCE.isPlaying()) {
 
@@ -162,7 +165,7 @@ public class InGameHudRenderer {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
 
-        if(mc.screen instanceof PauseScreen || mc.screen instanceof FontSettingsScreen) return;
+        if(mc.isPaused() || mc.screen instanceof FontSettingsScreen) return;
         if(mc.screen instanceof ChatScreen && ClientConfig.INSTANCE.options.hideWhenChat) return;
 
         boolean hudConfiguring = mc.screen instanceof HUDConfigScreen;
@@ -231,7 +234,7 @@ public class InGameHudRenderer {
 
                 Font adaptedFont = new Font(baseFont.getTypeface(), layoutParams.fontSize);
 
-                //left
+                // 左侧封面
                 if (layoutParams.showCover && HEAD_PICTURE.getUrl() != null) {
                     int coverX = innerX + layoutParams.padding;
                     int coverY = innerY + (innerHeight - layoutParams.coverSize) / 2;
@@ -243,91 +246,97 @@ public class InGameHudRenderer {
 
                 int textStartX = innerX + layoutParams.textStartX;
                 int textMaxWidth = layoutParams.textMaxWidth;
-                int currentY = innerY + layoutParams.textStartY;
                 int lineHeight = (int) (layoutParams.fontSize + 2);
 
+                // 收集所有需要显示的文本行
+                List<TextLine> linesToRender = new ArrayList<>();
+
                 if (options.displayLyrics && texts[0] != null && !texts[0].isEmpty()) {
-                    if (currentY + lineHeight <= innerY + innerHeight - layoutParams.padding) {
-                        drawTextSkijaWithinBounds(canvas, adaptedFont, Component.literal(texts[0]),
-                                options.lyricsAlignment, textStartX, currentY, textMaxWidth,
-                                (int) config.lyricsColor.getNumber(), options.textShadow);
-                        currentY += lineHeight;
-                    }
+                    linesToRender.add(new TextLine(Component.literal(texts[0]), options.lyricsAlignment,
+                            (int) config.lyricsColor.getNumber()));
                 }
-
-                // 子歌词
                 if (options.displaySubLyrics && texts[1] != null && !texts[1].isEmpty()) {
-                    if (currentY + lineHeight <= innerY + innerHeight - layoutParams.padding) {
-                        drawTextSkijaWithinBounds(canvas, adaptedFont, Component.literal(texts[1]),
-                                options.subLyricsAlignment, textStartX, currentY, textMaxWidth,
-                                (int) config.subLyricsColor.getNumber(), options.textShadow);
-                        currentY += lineHeight;
-                    }
+                    linesToRender.add(new TextLine(Component.literal(texts[1]), options.subLyricsAlignment,
+                            (int) config.subLyricsColor.getNumber()));
                 }
-
                 if (options.displayMusicDetails && layoutParams.showMusicDetails) {
+                    linesToRender.add(new TextLine(getComponent(texts), options.musicDetailsAlignment,
+                            (int) config.musicDetailsColor.getNumber(), true));
+                }
+                if (options.displayTimeProgress && layoutParams.showProgress) {
+                    linesToRender.add(new TextLine(Component.literal(texts[3]), options.timeProgressAlignment,
+                            (int) config.timeProgressTextColor.getNumber()));
+                }
+
+                // 计算总高度并居中显示
+                int totalTextHeight = linesToRender.size() * lineHeight;
+                int startY = innerY + (innerHeight - totalTextHeight) / 2;
+                startY = Math.max(innerY + layoutParams.padding,
+                        Math.min(startY, innerY + innerHeight - totalTextHeight - layoutParams.padding));
+
+                int currentY = startY;
+
+                // 渲染所有文本行
+                for (int i = 0; i < linesToRender.size(); i++) {
+                    TextLine line = linesToRender.get(i);
+
                     if (currentY + lineHeight <= innerY + innerHeight - layoutParams.padding) {
-                        Component detailText = getComponent(texts);
-                        Component staticText = Component.literal(texts[3]);
-                        int staticWidth = getTextWidth(adaptedFont, staticText);
 
-                        MUSIC_DETAIL_SCROLL.setMaxWidth(staticWidth);
-                        MUSIC_DETAIL_SCROLL.setWidth(getTextWidth(adaptedFont, detailText));
-                        MUSIC_DETAIL_SCROLL.tick(options.scrollingTextSpeed);
+                        if (line.isScrolling) {
+                            // 滚动文本处理
+                            Component staticText = Component.literal(texts[3]);
+                            int staticWidth = getTextWidth(adaptedFont, staticText);
 
-                        canvas.save();
-                        int clipWidth = Math.min(textMaxWidth, staticWidth);
-                        if (clipWidth > 0) {
-                            canvas.clipRect(Rect.makeXYWH(textStartX, currentY, clipWidth, lineHeight));
+                            MUSIC_DETAIL_SCROLL.setMaxWidth(staticWidth);
+                            MUSIC_DETAIL_SCROLL.setWidth(getTextWidth(adaptedFont, line.text));
+                            MUSIC_DETAIL_SCROLL.tick(options.scrollingTextSpeed);
+
+                            // 为滚动文本添加 Scissor 效果
+                            canvas.save();
+                            int clipWidth = Math.min(textMaxWidth, staticWidth);
+                            if (clipWidth > 0) {
+                                canvas.clipRect(Rect.makeXYWH(textStartX, currentY, clipWidth, lineHeight));
+                            }
+
+                            int renderX = textStartX + MUSIC_DETAIL_SCROLL.getDx();
+                            drawTextWithScissor(canvas, adaptedFont, line.text, TextAlignment.LEFT,
+                                    renderX, currentY, textStartX, textMaxWidth, line.color, options.textShadow);
+
+                            canvas.restore();
+                        } else {
+                            // 普通文本，带 Scissor 效果
+                            drawTextWithScissor(canvas, adaptedFont, line.text, line.alignment,
+                                    textStartX, currentY, textStartX, textMaxWidth, line.color, options.textShadow);
                         }
 
-                        int renderX = textStartX + MUSIC_DETAIL_SCROLL.getDx();
-                        drawTextSkija(canvas, adaptedFont, detailText, TextAlignment.LEFT,
-                                renderX, currentY, (int) config.musicDetailsColor.getNumber(), options.textShadow);
-
-                        canvas.restore();
                         currentY += lineHeight;
                     }
                 }
 
-                // 时间和进度条
-                if (options.displayTimeProgress && layoutParams.showProgress) {
-                    if (currentY + lineHeight + 4 <= innerY + innerHeight - layoutParams.padding) {
-                        Component timeText = Component.literal(texts[3]);
-                        // 时间文本可能太长，截断处理
-                        String timeStr = timeText.getString();
-                        if (getTextWidth(adaptedFont, timeText) > textMaxWidth) {
-                            timeStr = truncateText(adaptedFont, timeStr, textMaxWidth - 10);
-                            timeText = Component.literal(timeStr);
-                        }
-                        drawTextSkijaWithinBounds(canvas, adaptedFont, timeText,
-                                options.timeProgressAlignment, textStartX, currentY, textMaxWidth,
-                                (int) config.timeProgressTextColor.getNumber(), options.textShadow);
-                        currentY += lineHeight;
+                // 进度条（在最下方）
+                if (options.displayTimeProgress && layoutParams.showProgress && linesToRender.size() > 0) {
+                    int lastTextEndY = startY + linesToRender.size() * lineHeight;
+                    int barY = lastTextEndY + 2;
 
-                        // 进度条
-                        if (MusicPlayerHandler.INSTANCE.currentMeta != null &&
-                                MusicPlayerHandler.INSTANCE.currentMeta.getDuration() != null &&
-                                currentY + 2 <= innerY + innerHeight - layoutParams.padding) {
+                    if (barY + 2 <= innerY + innerHeight - layoutParams.padding) {
+                        int barWidth = layoutParams.progressBarWidth;
+                        int barX = textStartX + (textMaxWidth - barWidth) / 2;
+                        barX = Math.max(innerX + layoutParams.padding,
+                                Math.min(barX, innerX + innerWidth - barWidth - layoutParams.padding));
+                        barWidth = Math.min(barWidth, innerX + innerWidth - layoutParams.padding - barX);
 
-                            int barWidth = layoutParams.progressBarWidth;
-                            int barX = textStartX + (textMaxWidth - barWidth) / 2;
-                            barX = Math.max(innerX + layoutParams.padding,
-                                    Math.min(barX, innerX + innerWidth - barWidth - layoutParams.padding));
-                            barWidth = Math.min(barWidth, innerX + innerWidth - layoutParams.padding - barX);
+                        if (barWidth > 5 && MusicPlayerHandler.INSTANCE.currentMeta != null &&
+                                MusicPlayerHandler.INSTANCE.currentMeta.getDuration() != null) {
+                            int barHeight = Math.max(1, Math.min(2, innerHeight / 30));
 
-                            if (barWidth > 5) {
-                                int barHeight = Math.max(1, Math.min(2, innerHeight / 30));
+                            try (Paint bgPaint = new Paint().setColor((int) config.timeProgressBgColor.getNumber())) {
+                                canvas.drawRect(Rect.makeXYWH(barX, barY, barWidth, barHeight), bgPaint);
+                            }
 
-                                try (Paint bgPaint = new Paint().setColor((int) config.timeProgressBgColor.getNumber())) {
-                                    canvas.drawRect(Rect.makeXYWH(barX, currentY, barWidth, barHeight), bgPaint);
-                                }
-
-                                try (Paint progressPaint = new Paint().setColor((int) config.timeProgressColor.getNumber())) {
-                                    float progressWidth = barWidth * MusicPlayerHandler.INSTANCE.progressPercentage;
-                                    if (progressWidth > 0) {
-                                        canvas.drawRect(Rect.makeXYWH(barX, currentY, progressWidth, barHeight), progressPaint);
-                                    }
+                            try (Paint progressPaint = new Paint().setColor((int) config.timeProgressColor.getNumber())) {
+                                float progressWidth = barWidth * MusicPlayerHandler.INSTANCE.progressPercentage;
+                                if (progressWidth > 0) {
+                                    canvas.drawRect(Rect.makeXYWH(barX, barY, progressWidth, barHeight), progressPaint);
                                 }
                             }
                         }
@@ -337,6 +346,45 @@ public class InGameHudRenderer {
 
             canvas.restore();
         }
+    }
+
+    // 带 Scissor 效果的文本绘制
+    private void drawTextWithScissor(Canvas canvas, Font font, Component text, TextAlignment alignment,
+                                     int textX, int y, int clipStartX, int clipWidth, int color, boolean shadow) {
+        String textStr = text.getString();
+        if (textStr == null || textStr.isEmpty()) return;
+
+        int textWidth = getTextWidth(font, text);
+        int renderX;
+
+        switch (alignment) {
+            case LEFT -> renderX = textX;
+            case CENTER -> renderX = textX + (clipWidth - textWidth) / 2;
+            case RIGHT -> renderX = textX + clipWidth - textWidth;
+            default -> renderX = textX;
+        }
+
+        // 确保文本不超出左边界
+        renderX = Math.max(clipStartX, renderX);
+
+        // 保存画布状态并设置裁剪区域
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(clipStartX, y, clipWidth, (int) font.getSize() + 2));
+
+        // 绘制文本
+        int renderY = y + (int) font.getSize() - 2;
+
+        if (shadow && (int) font.getSize() > 9) {
+            try (Paint shadowPaint = new Paint().setColor(0x55000000).setAntiAlias(true)) {
+                canvas.drawString(textStr, renderX + 1, renderY + 1, font, shadowPaint);
+            }
+        }
+
+        try (Paint textPaint = new Paint().setColor(color).setAntiAlias(true)) {
+            canvas.drawString(textStr, renderX, renderY, font, textPaint);
+        }
+
+        canvas.restore();
     }
 
     private LayoutParams calculateLayoutParams(int width, int height, ClientConfig.ClientConfigOptions options) {
@@ -367,8 +415,6 @@ public class InGameHudRenderer {
             params.textMaxWidth = width - params.padding * 2;
         }
         params.textMaxWidth = Math.max(30, params.textMaxWidth);
-
-        params.textStartY = params.padding;
 
         int lineHeight = (int) (params.fontSize + 2);
         int totalLines = 0;
@@ -448,48 +494,6 @@ public class InGameHudRenderer {
         return ellipsis;
     }
 
-    private void drawTextSkijaWithinBounds(Canvas canvas, Font font, Component text, TextAlignment alignment,
-                                           int startX, int y, int maxWidth, int color, boolean shadow) {
-        String textStr = text.getString();
-        if (textStr == null || textStr.isEmpty()) return;
-
-        if (getTextWidth(font, text) > maxWidth) {
-            textStr = truncateText(font, textStr, maxWidth);
-            text = Component.literal(textStr);
-        }
-
-        int textWidth = getTextWidth(font, text);
-        int renderX;
-
-        switch (alignment) {
-            case LEFT -> renderX = startX;
-            case CENTER -> renderX = startX + (maxWidth - textWidth) / 2;
-            case RIGHT -> renderX = startX + maxWidth - textWidth;
-            default -> renderX = startX;
-        }
-
-        renderX = Math.max(startX, renderX);
-        drawTextSkija(canvas, font, text, TextAlignment.LEFT, renderX, y, color, shadow);
-    }
-
-    private void drawTextSkija(Canvas canvas, Font font, Component text, TextAlignment alignment,
-                               int x, int y, int color, boolean shadow) {
-        String textStr = text.getString();
-        if (textStr == null || textStr.isEmpty()) return;
-
-        int renderY = y + (int) font.getSize() - 2;
-
-        if (shadow && (int) font.getSize() > 9) {
-            try (Paint shadowPaint = new Paint().setColor(0x55000000).setAntiAlias(true)) {
-                canvas.drawString(textStr, x + 1, renderY + 1, font, shadowPaint);
-            }
-        }
-
-        try (Paint textPaint = new Paint().setColor(color).setAntiAlias(true)) {
-            canvas.drawString(textStr, x, renderY, font, textPaint);
-        }
-    }
-
     private int getTextWidth(Font font, Component text) {
         String textStr = text.getString();
         if (textStr == null || textStr.isEmpty()) return 0;
@@ -552,13 +556,31 @@ public class InGameHudRenderer {
         return Component.literal(texts[2] + state);
     }
 
+    // 文本行数据类
+    private static class TextLine {
+        Component text;
+        TextAlignment alignment;
+        int color;
+        boolean isScrolling;
+
+        TextLine(Component text, TextAlignment alignment, int color) {
+            this(text, alignment, color, false);
+        }
+
+        TextLine(Component text, TextAlignment alignment, int color, boolean isScrolling) {
+            this.text = text;
+            this.alignment = alignment;
+            this.color = color;
+            this.isScrolling = isScrolling;
+        }
+    }
+
     private static class LayoutParams {
         int padding = 2;
         float fontSize = 11f;
         int coverSize = 0;
         boolean showCover = false;
         int textStartX = 0;
-        int textStartY = 0;
         int textMaxWidth = 0;
         boolean showMusicDetails = true;
         boolean showProgress = true;

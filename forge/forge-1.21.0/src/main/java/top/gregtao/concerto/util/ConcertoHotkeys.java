@@ -1,8 +1,6 @@
 package top.gregtao.concerto.util;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import io.github.humbleui.skija.Canvas;
-import io.github.humbleui.skija.Font;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -71,14 +69,14 @@ public class ConcertoHotkeys {
 
             ENLARGING_HUD = new KeyMapping("concerto.hud.enlarge",
                     KeyConflictContext.UNIVERSAL,
-                    KeyModifier.CONTROL,
+                    KeyModifier.ALT,
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_PAGE_UP,
                     CATEGORY);
 
             REDUCE_HUD = new KeyMapping("concerto.hud.reduce",
                     KeyConflictContext.UNIVERSAL,
-                    KeyModifier.CONTROL,
+                    KeyModifier.ALT,
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_PAGE_DOWN,
                     CATEGORY);

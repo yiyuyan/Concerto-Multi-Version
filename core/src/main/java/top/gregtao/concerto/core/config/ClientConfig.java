@@ -56,6 +56,9 @@ public class ClientConfig extends ConfigFile {
     }
 
     public static class ClientConfigOptions {
+
+        public boolean enableDefaultLyricsHUD = true;
+
         public boolean confirmAfterReceived = true;
         public boolean hideWhenChat = true;
         public boolean printRequestResults = false;

@@ -25,6 +25,12 @@ public class ConcertoOptions {
         this.config = config;
 
         this.updaters.add(new SingleBooleanOption(
+                "enableDefaultLyricsHUD",
+                value -> this.config.options.enableDefaultLyricsHUD = value,
+                () -> this.config.options.enableDefaultLyricsHUD
+        ));
+
+        this.updaters.add(new SingleBooleanOption(
                 "confirmAfterReceived",
                 value -> this.config.options.confirmAfterReceived = value,
                 () -> this.config.options.confirmAfterReceived
