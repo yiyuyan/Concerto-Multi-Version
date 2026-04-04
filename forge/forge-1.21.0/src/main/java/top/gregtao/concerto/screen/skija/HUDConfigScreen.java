@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import top.gregtao.concerto.core.config.ClientConfig;
 import top.gregtao.concerto.screen.skija.font.FontConfigScreen;
 import top.gregtao.concerto.skija.SkijaHUDConfig;
+import top.gregtao.concerto.util.ConcertoOptions;
 
 public class HUDConfigScreen extends OptionsSubScreen {
     public HUDConfigScreen(Screen lastScreen) {
@@ -46,7 +47,8 @@ public class HUDConfigScreen extends OptionsSubScreen {
                                 ((pCycleButton, pValue) -> {
                                     SkijaHUDConfig.status = pValue;
                                     ClientConfig.INSTANCE.options.enableDefaultLyricsHUD = pValue.equals(SkijaHUDConfig.HUDStatus.NEVER);
-                                    ClientConfig.INSTANCE.writeOptions();
+                                    ConcertoOptions.INSTANCE.readOptions();
+                                    ConcertoOptions.INSTANCE.saveOptions();
                                 }))
         );
 

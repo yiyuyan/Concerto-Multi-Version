@@ -71,14 +71,14 @@ public class ConcertoHotkeys {
                     KeyConflictContext.UNIVERSAL,
                     KeyModifier.ALT,
                     InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_PAGE_UP,
+                    GLFW.GLFW_KEY_UP,
                     CATEGORY);
 
             REDUCE_HUD = new KeyMapping("concerto.hud.reduce",
                     KeyConflictContext.UNIVERSAL,
                     KeyModifier.ALT,
                     InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_PAGE_DOWN,
+                    GLFW.GLFW_KEY_DOWN,
                     CATEGORY);
 
             //STIJA END
@@ -135,7 +135,7 @@ public class ConcertoHotkeys {
 
         private static boolean checkHUDDisplaying(){
             Minecraft mc = Minecraft.getInstance();
-            if(mc.screen instanceof PauseScreen || mc.screen instanceof FontSettingsScreen) return false;
+            if(mc.isPaused() || mc.screen instanceof FontSettingsScreen) return false;
             if(mc.screen instanceof ChatScreen && ClientConfig.INSTANCE.options.hideWhenChat) return false;
 
             boolean hudConfiguring = mc.screen instanceof HUDConfigScreen;
@@ -151,4 +151,4 @@ public class ConcertoHotkeys {
             return enable || configuring || hudConfiguring;
         }
     }
-    }
+}
